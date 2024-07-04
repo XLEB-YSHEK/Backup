@@ -5,6 +5,8 @@ VisualStudioVersion = 17.9.34723.18
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup", "Backup\Backup.csproj", "{D994095F-3E14-43A8-BF8E-4508EF7FAC5A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackupConsole", "BackupConsole\BackupConsole.csproj", "{6477846B-A572-4FF4-A246-BA37C19A7D9C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{D994095F-3E14-43A8-BF8E-4508EF7FAC5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D994095F-3E14-43A8-BF8E-4508EF7FAC5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D994095F-3E14-43A8-BF8E-4508EF7FAC5A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6477846B-A572-4FF4-A246-BA37C19A7D9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6477846B-A572-4FF4-A246-BA37C19A7D9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6477846B-A572-4FF4-A246-BA37C19A7D9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6477846B-A572-4FF4-A246-BA37C19A7D9C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
