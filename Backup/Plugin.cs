@@ -10,7 +10,7 @@ namespace Backup
         public override string Prefix { get; } = "Backup";
         public override string Name { get; } = "Backup";
         public override string Author { get; } = "XLEB_YSHEK";
-        public override Version Version { get; } = new Version(8, 9, 6);
+        public override Version Version { get; } = new Version(2, 0, 0);
         public override PluginPriority Priority { get; } = PluginPriority.Low;
 
         public static Plugin Singleton;
@@ -45,9 +45,11 @@ namespace Backup
         {
             if (Archive.TimeToBackup())
             {
-                string archivePatch = Archive.CreateArchive(Config.LogFolders, Config.ArchivePassword);
+                string archivePatch = Archive.CreateArchive(Config.LogFolders, Config.LogFiles, Config.ArchivePassword);
+                byte[] key = Encrypt.GetKeyFromFile(Config.KeyPatch);
+                string encryptFile = Encrypt.EncryptFile(archivePatch, key);
 
-                await Archive.SendBackup(archivePatch, Config.BotToken, Config.ChannelID);
+                await Archive.SendBackup(encryptFile, Config.BotToken, Config.ChannelID);
             }
         }
     }

@@ -14,7 +14,7 @@ namespace Backup
         /// <param name="folders">Массив с папками, которые будут включены в архив</param>
         /// <param name="password">Пароль для архива</param>
         /// <returns></returns>
-        public static string CreateArchive(string[] folders, string password)
+        public static string CreateArchive(string[] folders, string[] files, string password)
         {
             using (ZipOutputStream zipStream = new ZipOutputStream(File.Create("ArchiveBackup.zip")))
             {
@@ -27,6 +27,11 @@ namespace Backup
                     CompressFolder(folders[floderCounter], folders[floderCounter], zipStream);
                 }
 
+                for (int fileCounter = 0; fileCounter <= files.Length - 1; ++fileCounter)
+                {
+                    CompressFile(files[fileCounter], zipStream);
+                }
+
                 zipStream.Finish();
                 zipStream.Close();
             }          
@@ -34,7 +39,7 @@ namespace Backup
         }
 
         /// <summary>
-        /// 
+        /// Добавляет в архив папки с их содержимым
         /// </summary>
         /// <param name="rootFolder"></param>
         /// <param name="currentFolder"></param>
@@ -68,6 +73,31 @@ namespace Backup
             foreach (string folder in folders)
             {
                 CompressFolder(rootFolder, folder, zipStream);
+            }
+        }
+
+        /// <summary>
+        /// Добавляет в архив файлы
+        /// </summary>
+        /// <param name="filePatch">Путь до файла</param>
+        /// <param name="zipStream">Zip поток</param>
+        private static void CompressFile(string filePatch, ZipOutputStream zipStream)
+        {
+            FileInfo fileInfo = new FileInfo(filePatch);
+            DirectoryInfo directory = new DirectoryInfo(fileInfo.Directory.FullName);
+
+            using (FileStream fileStream = File.OpenRead(filePatch))
+            {
+                byte[] buffer = new byte[fileStream.Length];
+                fileStream.Read(buffer, 0, buffer.Length);
+
+                string entryName = directory.Name + "//" + filePatch.Replace(directory.FullName, "").TrimStart('\\');
+                ZipEntry entry = new ZipEntry(entryName);
+                entry.DateTime = fileInfo.LastWriteTime;
+                entry.Size = fileStream.Length;
+
+                zipStream.PutNextEntry(entry);
+                zipStream.Write(buffer, 0, buffer.Length);
             }
         }
 
