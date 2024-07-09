@@ -1,10 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace Backup
 {
     public class Encrypt
     {
+        /// <summary>
+        /// Gets the ApplicationData path directory.
+        /// </summary>
+        public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
         /// <summary>
         /// Gets the encryption key from a file as an array of bytes
         /// </summary>
