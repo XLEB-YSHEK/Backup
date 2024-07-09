@@ -9,10 +9,10 @@ namespace Backup
     public class Archive
     {
         /// <summary>
-        /// Создёт архив и возвращает путь до сохранённого архива
+        /// Creates an archive and returns the path to the saved archive
         /// </summary>
-        /// <param name="folders">Массив с папками, которые будут включены в архив</param>
-        /// <param name="password">Пароль для архива</param>
+        /// <param name="folders">Array with folders to be included in the archive</param>
+        /// <param name="password">Password for the archive</param>
         /// <returns></returns>
         public static string CreateArchive(string[] folders, string[] files, string password)
         {
@@ -24,12 +24,12 @@ namespace Backup
 
                 for (int floderCounter = 0; floderCounter <= folders.Length - 1; ++floderCounter)
                 {
-                    CompressFolder(folders[floderCounter], folders[floderCounter], zipStream);
+                    AddFolder(folders[floderCounter], folders[floderCounter], zipStream);
                 }
 
                 for (int fileCounter = 0; fileCounter <= files.Length - 1; ++fileCounter)
                 {
-                    CompressFile(files[fileCounter], zipStream);
+                    AddFile(files[fileCounter], zipStream);
                 }
 
                 zipStream.Finish();
@@ -39,12 +39,12 @@ namespace Backup
         }
 
         /// <summary>
-        /// Добавляет в архив папки с их содержимым
+        /// Adds folders with their contents to the archive
         /// </summary>
         /// <param name="rootFolder"></param>
         /// <param name="currentFolder"></param>
         /// <param name="zipStream"></param>
-        private static void CompressFolder(string rootFolder, string currentFolder, ZipOutputStream zipStream)
+        private static void AddFolder(string rootFolder, string currentFolder, ZipOutputStream zipStream)
         {
             string[] files = Directory.GetFiles(currentFolder);
 
@@ -72,16 +72,16 @@ namespace Backup
 
             foreach (string folder in folders)
             {
-                CompressFolder(rootFolder, folder, zipStream);
+                AddFolder(rootFolder, folder, zipStream);
             }
         }
 
         /// <summary>
-        /// Добавляет в архив файлы
+        /// Adds files to the archive
         /// </summary>
-        /// <param name="filePatch">Путь до файла</param>
-        /// <param name="zipStream">Zip поток</param>
-        private static void CompressFile(string filePatch, ZipOutputStream zipStream)
+        /// <param name="filePatch">File path</param>
+        /// <param name="zipStream">ZipOutputStream</param>
+        private static void AddFile(string filePatch, ZipOutputStream zipStream)
         {
             FileInfo fileInfo = new FileInfo(filePatch);
             DirectoryInfo directory = new DirectoryInfo(fileInfo.Directory.FullName);
@@ -102,16 +102,16 @@ namespace Backup
         }
 
         /// <summary>
-        /// Отправляет архив в дискорд канал через бота
+        /// Sends an archive to the Discord channel through a bot
         /// </summary>
-        /// <param name="archivePatch">Путь до архива</param>
-        /// <param name="botToken">Токен от бота</param>
-        /// <param name="channelId">ID канала</param>
+        /// <param name="archivePatch">Path to the archive</param>
+        /// <param name="botToken">Discord bot token</param>
+        /// <param name="channelId">Channel ID</param>
         /// <returns></returns>
         public static async Task SendBackup(string archivePatch, string botToken, string channelId)
         {
             HttpClient HttpClient = new HttpClient();
-            byte[] FileContent = System.IO.File.ReadAllBytes(archivePatch);
+            byte[] FileContent = File.ReadAllBytes(archivePatch);
 
             HttpClient.DefaultRequestHeaders.Add("Authorization", "Bot " + botToken);
 
@@ -124,18 +124,18 @@ namespace Backup
         }
 
         /// <summary>
-        /// Проверяет, наступило - ли время для создания бекапа
+        /// Checks if it is time to create a backup
         /// </summary>
         /// <returns></returns>
         public static bool TimeToBackup()
         {
-            if (File.Exists("LastBackup.txt"))
+            if (File.Exists("NextBackup.txt"))
             {
-                DateTime date = DateTime.Parse(File.ReadAllText("LastBackup.txt"));
+                DateTime date = DateTime.Parse(File.ReadAllText("NextBackup.txt"));
 
                 if (DateTime.Now > date)
                 {
-                    File.WriteAllText("LastBackup.txt", DateTime.Now.AddDays(Plugin.Singleton.Config.DayNextBackup).ToString());
+                    File.WriteAllText("NextBackup.txt", DateTime.Now.AddDays(Plugin.Singleton.Config.DayNextBackup).ToShortDateString());
                     return true;
                 }
                 else
@@ -145,7 +145,7 @@ namespace Backup
             }
             else
             {
-                File.WriteAllText("LastBackup.txt", DateTime.Now.AddDays(Plugin.Singleton.Config.DayNextBackup).ToString());
+                File.WriteAllText("NextBackup.txt", DateTime.Now.AddDays(Plugin.Singleton.Config.DayNextBackup).ToShortDateString());
                 return true;
             }
         }

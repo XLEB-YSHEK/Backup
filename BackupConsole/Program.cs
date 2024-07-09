@@ -6,18 +6,20 @@ namespace BackupConsole
     {
         public static void Main()
         {
-            Console.WriteLine("Действие:\n[1] - Генерация ключа\n[2] - Дешифровка файла\n");
+            Console.WriteLine("Action:\n[1] - Encryption key generation\n[2] - File decryption\n");
+
             string choice = Console.ReadLine();
+
             Console.Clear();
 
             switch (choice)
             {
                 case "1":
                     {
-                        Console.WriteLine("Безопасность ключа:\n[1] - Низкая\n[2] - Средняя\n[3] - Высокая\n");
+                        Console.WriteLine("Key security:\n[1] - Low\n[2] - Medium\n[3] - High\n");
                         string keyChoice = Console.ReadLine();
 
-                        Console.WriteLine("Папка для сохранения ключа\n");
+                        Console.WriteLine("Folder for saving the key\n");
                         string directory = Console.ReadLine();
 
                         GenerateKeyToFile(directory, keyChoice == "1" ? KeyLenght.Small : keyChoice == "2" ? KeyLenght.Medium : KeyLenght.Long);
@@ -25,15 +27,24 @@ namespace BackupConsole
                     }
                     case "2":
                     {
-                        Console.WriteLine("Путь до ключа шифрования:\n");
+                        Console.WriteLine("Path to encryption key:\n");
                         string keyPatch = Console.ReadLine();
 
                         byte[] key = GetKeyFromFile(keyPatch);
 
-                        Console.WriteLine("Путь до файла для дешифровки\n");
+                        Console.WriteLine("Full file path\n");
                         string filePatch = Console.ReadLine();
 
-                        DecryptFile(filePatch, key);
+                        if (DecryptFile(filePatch, key))
+                        {
+                            Console.WriteLine("Succes");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Failed");
+                        }
+
+                        Console.ReadLine();
                         break;
                     }
                 default:
@@ -45,11 +56,11 @@ namespace BackupConsole
         }
 
         /// <summary>
-        /// Генерирует файл с ключом шифрования в указанную директорию
+        /// Generates a file with the encryption key to the specified directory
         /// </summary>
-        /// <param name="patchDirectory">Путь до каталога, где будет храниться файл с ключом</param>
-        /// <param name="keyLenght">Длина генерируемого ключа</param>
-        /// <returns>Возвращает путь до созданного файла с ключом</returns>
+        /// <param name="patchDirectory">Path to the directory where the key file will be stored</param>
+        /// <param name="keyLenght">Generated key length</param>
+        /// <returns>Returns the path to the created key file</returns>
         public static void GenerateKeyToFile(string patchDirectory, KeyLenght keyLenght)
         {
             using (FileStream FileStream = new FileStream(Path.Combine(patchDirectory, "key.txt"), FileMode.Create))
@@ -60,15 +71,16 @@ namespace BackupConsole
                 aesManaged.GenerateKey();
                 FileStream.Write(aesManaged.Key, 0, aesManaged.Key.Length);
             }
-            Console.WriteLine("Путь до файла: " + Path.Combine(patchDirectory, "key.txt"));
+            Console.WriteLine("File path: " + Path.Combine(patchDirectory, "key.txt"));
+            Console.ReadLine();
         }
 
         /// <summary>
-        /// Производит расшифровку файла при помощи ключа шифрования. Удаляет файл, который был зашифрован, на его место ставит расшифрованный
+        /// Decrypts the file using the encryption key. Deletes the file that was encrypted and replaces it with the decrypted one
         /// </summary>
-        /// <param name="filePatch">Путь до файла</param>
-        /// <param name="key">Ключ шифрования</param>
-        /// <returns>Возвращает true или false в зависимости от успеха операции</returns>
+        /// <param name="filePatch">File path</param>
+        /// <param name="key">Encryption key</param>
+        /// <returns>Returns true or false depending on the success of the operation</returns>
         public static bool DecryptFile(string filePatch, byte[] key)
         {
             if (key == null || !ValidateKey(key) || !File.Exists(filePatch))
@@ -83,12 +95,18 @@ namespace BackupConsole
                 using (FileStream fileStreamSource = File.OpenRead(filePatch))
                 {
                     byte[] initializationVector = new byte[16];
+
                     fileStreamSource.Read(initializationVector, 0, initializationVector.Length);
+
                     using (AesManaged aesManaged = new AesManaged() { Key = key, IV = initializationVector })
-                    using (CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true))
-                    using (FileStream fileStreamDestination = File.Create(tempPath))
                     {
-                        cryptoStream.CopyTo(fileStreamDestination);
+                        using (CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true))
+                        {
+                            using (FileStream fileStreamDestination = File.Create(tempPath))
+                            {
+                                cryptoStream.CopyTo(fileStreamDestination);
+                            }
+                        }
                     }
                 }
 
@@ -103,9 +121,9 @@ namespace BackupConsole
         }
 
         /// <summary>
-        /// Проверяет ключ шифрования на валидность
+        /// Checks the encryption key for correctness
         /// </summary>
-        /// <param name="key">Ключ шифрования</param>
+        /// <param name="key">Encryption key</param>
         /// <returns></returns>
         private static bool ValidateKey(byte[] key)
         {
@@ -120,16 +138,16 @@ namespace BackupConsole
         }
 
         /// <summary>
-        /// Получает ключ шифрования из указанного файла
+        /// Gets the encryption key from the specified file
         /// </summary>
-        /// <param name="filePatch">Файл с ключом шифрования</param>
+        /// <param name="filePatch">Encryption key file</param>
         public static byte[] GetKeyFromFile(string filePatch)
         {
             return File.ReadAllBytes(filePatch);
         }
 
         /// <summary>
-        /// Длина ключа
+        /// Key length
         /// </summary>
         public enum KeyLenght : int
         {

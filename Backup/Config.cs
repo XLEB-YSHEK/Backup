@@ -5,31 +5,34 @@ namespace Backup
 {
     public class Config : IConfig
     {
-        [Description("Включён?")]
+        [Description("Plugin enabled?")]
         public bool IsEnabled { get; set; } = false;
 
-        [Description("Папки, которые будут включены в бекап. Общий вес максимум 25 мб")]
-        public string[] LogFolders { get; set; } = { "/root/.config/Exiled", "/root/.config/SCP Secret Lab" };
+        [Description("Directories to be saved")]
+        public string[] LogFolders { get; set; } = { "/root/.config/EXILED", "/root/.config/SCP Secret Lab" };
 
-        [Description("Файлы, которые будут включены в бекап. Общий вес максимум 25 мб")]
+        [Description("Files to be saved")]
         public string[] LogFiles { get; set; } = { "/root/.config/Exiled/config.txt", "/root/.config/SCP Secret Lab/key.txt" };
 
-        [Description("Пароль к архиву")]
+        [Description("Password to the archive")]
         public string ArchivePassword { get; set; } = "12345";
 
-        [Description("Токен discord - бота")]
-        public string BotToken { get; set; } = "98jfi3j1i2f033";
+        [Description("Discord Bot token")]
+        public string DiscordBotToken { get; set; } = "98jfi3j1i2f033";
 
-        [Description("Путь к файлу с ключом шифрования")]
+        [Description("Use archive encryption?")]
+        public bool UseArchiveEncryption { get; set; } = true;
+
+        [Description("Path to the file with the encryption key")]
         public string KeyPatch { get; set; } = "/root/key.txt";
 
-        [Description("ID канала")]
+        [Description("ID of the channel to which the backup will be sent")]
         public string ChannelID { get; set; } = "7823749824932";
 
-        [Description("Через сколько дней делать бекап?")]
+        [Description("How many days to do a backup?")]
         public int DayNextBackup { get; set; } = 1;
 
-        [Description("Пофиг")]
+        [Description("Debug")]
         public bool Debug { get; set; } = false;
     }
 }

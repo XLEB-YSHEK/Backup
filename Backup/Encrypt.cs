@@ -5,11 +5,22 @@ namespace Backup
 {
     public class Encrypt
     {
+        /// <summary>
+        /// Gets the encryption key from a file as an array of bytes
+        /// </summary>
+        /// <param name="filePatch">Path to the file with the encryption key</param>
+        /// <returns></returns>
         public static byte[] GetKeyFromFile(string filePatch)
         {
             return File.ReadAllBytes(filePatch);
         }
 
+        /// <summary>
+        /// Encrypts the file
+        /// </summary>
+        /// <param name="filePatch">Path to the file to be encrypted</param>
+        /// <param name="key">A key representing an array of bytes</param>
+        /// <returns></returns>
         public static string EncryptFile(string filePatch, byte[] key)
         {
             if (key == null || !ValidateKey(key) || !File.Exists(filePatch))
@@ -46,6 +57,11 @@ namespace Backup
             return destinationFile;
         }
 
+        /// <summary>
+        /// Checks the key for correctness
+        /// </summary>
+        /// <param name="key">A key representing an array of bytes</param>
+        /// <returns></returns>
         private static bool ValidateKey(byte[] key)
         {
             if (key.Length == 16 || key.Length == 24 || key.Length == 32)

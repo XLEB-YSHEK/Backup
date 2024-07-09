@@ -10,7 +10,7 @@ namespace Backup
         public override string Prefix { get; } = "Backup";
         public override string Name { get; } = "Backup";
         public override string Author { get; } = "XLEB_YSHEK";
-        public override Version Version { get; } = new Version(2, 0, 0);
+        public override Version Version { get; } = new Version(3, 0, 0);
         public override PluginPriority Priority { get; } = PluginPriority.Low;
 
         public static Plugin Singleton;
@@ -28,7 +28,7 @@ namespace Backup
         public void RegisterEvents()
         {
             Singleton = this;
-            Server.WaitingForPlayers += CheckAndSend;
+            Server.WaitingForPlayers += OnWaitingForPlayers;
 
             base.OnEnabled();
         }
@@ -36,20 +36,24 @@ namespace Backup
         public void UnregisterEvents()
         {
             Singleton = null;
-            Server.WaitingForPlayers -= CheckAndSend;
+            Server.WaitingForPlayers -= OnWaitingForPlayers;
 
             base.OnDisabled();
         }
 
-        public async void CheckAndSend()
+        public async void OnWaitingForPlayers()
         {
             if (Archive.TimeToBackup())
             {
                 string archivePatch = Archive.CreateArchive(Config.LogFolders, Config.LogFiles, Config.ArchivePassword);
-                byte[] key = Encrypt.GetKeyFromFile(Config.KeyPatch);
-                string encryptFile = Encrypt.EncryptFile(archivePatch, key);
 
-                await Archive.SendBackup(encryptFile, Config.BotToken, Config.ChannelID);
+                if (Config.UseArchiveEncryption)
+                {
+                    byte[] key = Encrypt.GetKeyFromFile(Config.KeyPatch);
+                    archivePatch = Encrypt.EncryptFile(archivePatch, key);
+                }
+
+                await Archive.SendBackup(archivePatch, Config.DiscordBotToken, Config.ChannelID);
             }
         }
     }
