@@ -3,6 +3,10 @@ This is a small plugin for backing up server files and sending them to the disco
 
 Do not forget to set the password to the archive in the configs!
 
+What a backup looks like
+
+![Backup](https://cdn.discordapp.com/attachments/901753786895310888/1260178997938098196/image.png?ex=668e60a6&is=668d0f26&hm=2dadb6823c2af629a6396c7455e29239269c15f165fde0476f3f24acd0c1b783&)
+
 # Installation
 Place the `Backup.dll` file in `EXILED/Plugins`
 
@@ -11,6 +15,8 @@ Place `ICSharpCode.SharpZipLib.dll` file in `EXILED/Plugins/dependencies`
 If you are not going to encrypt the archive for additional protection, you do not need `BackupConsole.exe`
 
 You need create a new discord bot!
+# Configuration
+Remember, there are separate settings for saving entire folders and files, if somehow a file or directory is missing, an error may occur and the backup will not be sent. If you only need to save files or folders, then put `[]` so that any of these categories are not saved. Example: `log_files: []`
 
 # Encryption
 To use encryption and decryption you must generate an encryption key, for this you must download `BackupConsole.exe`.
