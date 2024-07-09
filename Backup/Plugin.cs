@@ -10,22 +10,12 @@ namespace Backup
         public override string Prefix { get; } = "Backup";
         public override string Name { get; } = "Backup";
         public override string Author { get; } = "XLEB_YSHEK";
-        public override Version Version { get; } = new Version(3, 0, 0);
+        public override Version Version { get; } = new Version(3, 1, 0);
         public override PluginPriority Priority { get; } = PluginPriority.Low;
 
         public static Plugin Singleton;
 
         public override void OnEnabled()
-        {
-            RegisterEvents();
-        }
-
-        public override void OnDisabled()
-        {
-            UnregisterEvents();
-        }
-
-        public void RegisterEvents()
         {
             Singleton = this;
             Server.WaitingForPlayers += OnWaitingForPlayers;
@@ -33,10 +23,10 @@ namespace Backup
             base.OnEnabled();
         }
 
-        public void UnregisterEvents()
+        public override void OnDisabled()
         {
-            Singleton = null;
             Server.WaitingForPlayers -= OnWaitingForPlayers;
+            Singleton = null;
 
             base.OnDisabled();
         }
@@ -53,7 +43,7 @@ namespace Backup
                     archivePatch = Encrypt.EncryptFile(archivePatch, key);
                 }
 
-                await Archive.SendBackup(archivePatch, Config.DiscordBotToken, Config.ChannelID);
+                await Archive.SendBackup(archivePatch, Config.DiscordWebhookUrl);
             }
         }
     }

@@ -17,8 +17,8 @@ namespace Backup
         [Description("Password to the archive")]
         public string ArchivePassword { get; set; } = "12345";
 
-        [Description("Discord Bot token")]
-        public string DiscordBotToken { get; set; } = "98jfi3j1i2f033";
+        [Description("Discord Webhook URL")]
+        public string DiscordWebhookUrl { get; set; } = "98jfi3j1i2f033";
 
         [Description("Use archive encryption?")]
         public bool UseArchiveEncryption { get; set; } = true;

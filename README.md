@@ -14,13 +14,9 @@ Place `ICSharpCode.SharpZipLib.dll` file in `EXILED/Plugins/dependencies`
 
 If you are not going to encrypt the archive for additional protection, you do not need `BackupConsole.exe`
 
-You need create a new discord bot!
+You need webhook!
 # Configuration
-Remember, there are separate settings for saving entire folders and files, if somehow a file or directory is missing, an error may occur and the backup will not be sent. If you only need to save files or folders, then put `[]` so that any of these categories are not saved. Example: `log_files: []`
-
 Note that the plugin will be inactive the first time you run it so you can configure it. The first time it is turned on it should send a backup to the channel, if it does not, check the configuration and delete the `NextBackup.txt` file in the server folder (where LocalAdmin is located)
-# Configuration
-Remember, there are separate settings for saving entire folders and files, if somehow a file or directory is missing, an error may occur and the backup will not be sent. If you only need to save files or folders, then put `[]` so that any of these categories are not saved. Example: `log_files: []`
 
 # Encryption
 To use encryption and decryption you must generate an encryption key, for this you must download `BackupConsole.exe`.

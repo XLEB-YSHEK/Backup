@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Http;
+using Exiled.API.Features;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
 
@@ -22,13 +23,23 @@ namespace Backup
 
                 zipStream.Password = password;
 
-                for (int floderCounter = 0; floderCounter <= folders.Length - 1; ++floderCounter)
+                for (int folderCounter = 0; folderCounter <= folders.Length - 1; ++folderCounter)
                 {
-                    AddFolder(folders[floderCounter], folders[floderCounter], zipStream);
+                    if (!Directory.Exists(folders[folderCounter]))
+                    {
+                        Log.Warn("Folder " + folders[folderCounter] + " not found");
+                        continue;
+                    }
+                    AddFolder(folders[folderCounter], folders[folderCounter], zipStream);
                 }
 
                 for (int fileCounter = 0; fileCounter <= files.Length - 1; ++fileCounter)
                 {
+                    if (!File.Exists(files[fileCounter]))
+                    {
+                        Log.Warn("File " + files[fileCounter] + " not found");
+                        continue;
+                    }
                     AddFile(files[fileCounter], zipStream);
                 }
 
@@ -105,22 +116,26 @@ namespace Backup
         /// Sends an archive to the Discord channel through a bot
         /// </summary>
         /// <param name="archivePatch">Path to the archive</param>
-        /// <param name="botToken">Discord bot token</param>
-        /// <param name="channelId">Channel ID</param>
+        /// <param name="webhookUrl">Webhook URL</param>
         /// <returns></returns>
-        public static async Task SendBackup(string archivePatch, string botToken, string channelId)
+        public static async Task SendBackup(string archivePatch, string webhookUrl)
         {
-            HttpClient HttpClient = new HttpClient();
-            byte[] FileContent = File.ReadAllBytes(archivePatch);
+            byte[] fileContent = File.ReadAllBytes(archivePatch);
 
-            HttpClient.DefaultRequestHeaders.Add("Authorization", "Bot " + botToken);
-
-            MultipartFormDataContent Form = new MultipartFormDataContent
+            MultipartFormDataContent form = new MultipartFormDataContent
             {
-                { new ByteArrayContent(FileContent), "Backup" + DateTime.Now.ToString(), "Backup.zip" }
+                { new ByteArrayContent(fileContent), "file", "Backup.zip" }
             };
 
-            await HttpClient.PostAsync($"https://discord.com/api/v9/channels/{channelId}/messages", Form);
+            using (HttpClient client = new HttpClient())
+            {
+                var response = await client.PostAsync(webhookUrl, form);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Log.Warn("Fail send backup :(\n" + response.Content);
+                }
+            }
         }
 
         /// <summary>
