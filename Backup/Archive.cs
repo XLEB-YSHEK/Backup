@@ -124,6 +124,8 @@ namespace Backup
 
             MultipartFormDataContent form = new MultipartFormDataContent
             {
+                // <t> - Discord Timestamp
+                { new StringContent($"New backup! Send process started in: <t:{DateTimeOffset.Now.ToUnixTimeSeconds()}>"), "content" },
                 { new ByteArrayContent(fileContent), "file", "Backup.zip" }
             };
 
@@ -133,7 +135,7 @@ namespace Backup
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Log.Warn("Fail send backup :(\n" + response.Content);
+                    Log.Warn("Failed send backup :(\n" + response.Content);
                 }
             }
         }
