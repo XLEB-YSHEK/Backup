@@ -45,7 +45,7 @@ namespace Backup
 
                 zipStream.Finish();
                 zipStream.Close();
-            }          
+            }
             return "ArchiveBackup.zip";
         }
 
@@ -131,7 +131,7 @@ namespace Backup
 
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.PostAsync(webhookUrl, form);
+                HttpResponseMessage response = await client.PostAsync(webhookUrl, form);
 
                 if (!response.IsSuccessStatusCode)
                 {

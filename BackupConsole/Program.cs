@@ -25,7 +25,7 @@ namespace BackupConsole
                         GenerateKeyToFile(directory, keyChoice == "1" ? KeyLenght.Small : keyChoice == "2" ? KeyLenght.Medium : KeyLenght.Long);
                         break;
                     }
-                    case "2":
+                case "2":
                     {
                         Console.WriteLine("Path to encryption key:\n");
                         string keyPatch = Console.ReadLine();
@@ -90,7 +90,7 @@ namespace BackupConsole
 
             try
             {
-                var tempPath = Path.GetTempFileName();
+                string tempPath = Path.GetTempFileName();
 
                 using (FileStream fileStreamSource = File.OpenRead(filePatch))
                 {
@@ -98,16 +98,10 @@ namespace BackupConsole
 
                     fileStreamSource.Read(initializationVector, 0, initializationVector.Length);
 
-                    using (AesManaged aesManaged = new AesManaged() { Key = key, IV = initializationVector })
-                    {
-                        using (CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true))
-                        {
-                            using (FileStream fileStreamDestination = File.Create(tempPath))
-                            {
-                                cryptoStream.CopyTo(fileStreamDestination);
-                            }
-                        }
-                    }
+                    using AesManaged aesManaged = new AesManaged() { Key = key, IV = initializationVector };
+                    using CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true);
+                    using FileStream fileStreamDestination = File.Create(tempPath);
+                    cryptoStream.CopyTo(fileStreamDestination);
                 }
 
                 File.Delete(filePatch);
