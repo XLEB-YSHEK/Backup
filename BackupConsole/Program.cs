@@ -98,11 +98,14 @@ namespace BackupConsole
 
                     fileStreamSource.Read(initializationVector, 0, initializationVector.Length);
 
-                    using (CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true))
+                    using (AesManaged aesManaged = new AesManaged() { Key = key, IV = initializationVector })
                     {
-                        using (FileStream fileStreamDestination = File.Create(tempPath))
+                        using (CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true))
                         {
-                            cryptoStream.CopyTo(fileStreamDestination);
+                            using (FileStream fileStreamDestination = File.Create(tempPath))
+                            {
+                                cryptoStream.CopyTo(fileStreamDestination);
+                            }
                         }
                     }
                 }
