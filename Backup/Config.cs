@@ -13,7 +13,7 @@ namespace Backup
         public string[] LogFolders { get; set; } = { Path.Combine(Encrypt.AppData, "EXILED"), Path.Combine(Encrypt.AppData, "SCP Secret Laboratory") };
 
         [Description("Files to be saved.")]
-        public string[] LogFiles { get; set; } = { Path.Combine(Encrypt.AppData, "EXILED", "7777-config.yml"), Path.Combine(Encrypt.AppData, "SCP Secret Laboratory", "verkey.txt") };
+        public string[] LogFiles { get; set; } = { Path.Combine(Encrypt.AppData, "EXILED", "Configs", "7777-config.yml"), Path.Combine(Encrypt.AppData, "SCP Secret Laboratory", "verkey.txt") };
 
         [Description("Password to the archive")]
         public string ArchivePassword { get; set; } = "12345";
