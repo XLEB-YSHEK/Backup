@@ -1,33 +1,31 @@
 ﻿using System.ComponentModel;
+using System.IO;
 using Exiled.API.Interfaces;
 
 namespace Backup
 {
     public class Config : IConfig
     {
-        [Description("Plugin enabled?")]
+        [Description("Indicates plugin enabled or not.")]
         public bool IsEnabled { get; set; } = false;
 
-        [Description("Directories to be saved")]
-        public string[] LogFolders { get; set; } = { "/root/.config/EXILED", "/root/.config/SCP Secret Lab" };
+        [Description("Directories to be saved.")]
+        public string[] LogFolders { get; set; } = { Path.Combine(Encrypt.AppData, "EXILED"), Path.Combine(Encrypt.AppData, "SCP Secret Laboratory") };
 
-        [Description("Files to be saved")]
-        public string[] LogFiles { get; set; } = { "/root/.config/Exiled/config.txt", "/root/.config/SCP Secret Lab/key.txt" };
+        [Description("Files to be saved.")]
+        public string[] LogFiles { get; set; } = { Path.Combine(Encrypt.AppData, "EXILED", "Configs", "7777-config.yml"), Path.Combine(Encrypt.AppData, "SCP Secret Laboratory", "verkey.txt") };
 
         [Description("Password to the archive")]
         public string ArchivePassword { get; set; } = "12345";
 
         [Description("Discord Webhook URL")]
-        public string DiscordWebhookUrl { get; set; } = "98jfi3j1i2f033";
+        public string DiscordWebhookUrl { get; set; } = "Webhook full URL";
 
         [Description("Use archive encryption?")]
         public bool UseArchiveEncryption { get; set; } = true;
 
-        [Description("Path to the file with the encryption key")]
-        public string KeyPatch { get; set; } = "/root/key.txt";
-
-        [Description("ID of the channel to which the backup will be sent")]
-        public string ChannelID { get; set; } = "7823749824932";
+        [Description("Path to the file where encryption key stored.")]
+        public string KeyPatch { get; set; } = Path.Combine(Encrypt.AppData, "access-key.txt");
 
         [Description("How many days to do a backup?")]
         public int DayNextBackup { get; set; } = 1;

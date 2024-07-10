@@ -25,7 +25,7 @@ namespace BackupConsole
                         GenerateKeyToFile(directory, keyChoice == "1" ? KeyLenght.Small : keyChoice == "2" ? KeyLenght.Medium : KeyLenght.Long);
                         break;
                     }
-                    case "2":
+                case "2":
                     {
                         Console.WriteLine("Path to encryption key:\n");
                         string keyPatch = Console.ReadLine();
@@ -90,7 +90,7 @@ namespace BackupConsole
 
             try
             {
-                var tempPath = Path.GetTempFileName();
+                string tempPath = Path.GetTempFileName();
 
                 using (FileStream fileStreamSource = File.OpenRead(filePatch))
                 {

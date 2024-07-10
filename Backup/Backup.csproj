@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="0Harmony">
-      <HintPath>..\..\..\..\Desktop\ссылки\EXILED\Plugins\dependencies\0Harmony.dll</HintPath>
-    </Reference>
     <Reference Include="Exiled.API">
       <HintPath>..\..\..\..\Desktop\ссылки\EXILED\Plugins\dependencies\Exiled.API.dll</HintPath>
     </Reference>

@@ -1,10 +1,16 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Security.Cryptography;
 
 namespace Backup
 {
     public class Encrypt
     {
+        /// <summary>
+        /// Gets the ApplicationData path directory.
+        /// </summary>
+        public static string AppData { get; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
         /// <summary>
         /// Gets the encryption key from a file as an array of bytes
         /// </summary>
@@ -28,9 +34,9 @@ namespace Backup
                 return null;
             }
 
-            var tempPatch = Path.GetTempFileName();
-            var encryptFileName = "Encrypt" + new FileInfo(filePatch).Name;
-            var targetDirectory = new FileInfo(filePatch).Directory.FullName;
+            string tempPatch = Path.GetTempFileName();
+            string encryptFileName = "Encrypt" + new FileInfo(filePatch).Name;
+            string targetDirectory = new FileInfo(filePatch).Directory.FullName;
             string destinationFile = Path.Combine(targetDirectory, encryptFileName);
 
             if (File.Exists(destinationFile))
