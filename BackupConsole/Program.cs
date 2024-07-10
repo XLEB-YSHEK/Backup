@@ -98,10 +98,13 @@ namespace BackupConsole
 
                     fileStreamSource.Read(initializationVector, 0, initializationVector.Length);
 
-                    using AesManaged aesManaged = new AesManaged() { Key = key, IV = initializationVector };
-                    using CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true);
-                    using FileStream fileStreamDestination = File.Create(tempPath);
-                    cryptoStream.CopyTo(fileStreamDestination);
+                    using (CryptoStream cryptoStream = new CryptoStream(fileStreamSource, aesManaged.CreateDecryptor(), CryptoStreamMode.Read, true))
+                    {
+                        using (FileStream fileStreamDestination = File.Create(tempPath))
+                        {
+                            cryptoStream.CopyTo(fileStreamDestination);
+                        }
+                    }
                 }
 
                 File.Delete(filePatch);
