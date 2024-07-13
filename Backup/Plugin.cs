@@ -9,7 +9,7 @@ namespace Backup
     {
         public override string Prefix { get; } = "Backup";
         public override string Name { get; } = "Backup";
-        public override string Author { get; } = "XLEB_YSHEK";
+        public override string Author { get; } = "XLEB_YSHEK & swdmeow";
         public override Version Version { get; } = new Version(3, 2, 0);
         public override PluginPriority Priority { get; } = PluginPriority.Low;
 
