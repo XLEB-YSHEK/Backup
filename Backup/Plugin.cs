@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Exiled.API.Enums;
 using Exiled.API.Features;
 using Server = Exiled.Events.Handlers.Server;
@@ -10,7 +11,7 @@ namespace Backup
         public override string Prefix { get; } = "Backup";
         public override string Name { get; } = "Backup";
         public override string Author { get; } = "XLEB_YSHEK & swdmeow";
-        public override Version Version { get; } = new Version(3, 2, 0);
+        public override Version Version { get; } = new Version(3, 3, 0);
         public override PluginPriority Priority { get; } = PluginPriority.Low;
 
         public static Plugin Singleton;
@@ -43,7 +44,16 @@ namespace Backup
                     archivePatch = Encrypt.EncryptFile(archivePatch, key);
                 }
 
-                await Archive.SendBackup(archivePatch, Config.DiscordWebhookUrl);
+                if (new FileInfo(archivePatch).Length / 1048576.0 > 25)
+                {
+                    Log.Warn("Failed send backup! Big file size!");
+                    return;
+                }
+                else
+                {
+                    await Archive.SendBackup(archivePatch, Config.DiscordWebhookUrl);
+                    File.Delete(archivePatch);
+                }
             }
         }
     }

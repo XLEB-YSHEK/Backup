@@ -4,6 +4,7 @@ using System.Net.Http;
 using Exiled.API.Features;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
+using System.Linq;
 
 namespace Backup
 {
@@ -57,12 +58,17 @@ namespace Backup
         /// <param name="zipStream"></param>
         private static void AddFolder(string rootFolder, string currentFolder, ZipOutputStream zipStream)
         {
+            DirectoryInfo directory = new DirectoryInfo(rootFolder);
             string[] files = Directory.GetFiles(currentFolder);
 
             foreach (string file in files)
             {
                 FileInfo fileInfo = new FileInfo(file);
-                DirectoryInfo directory = new DirectoryInfo(rootFolder);
+
+                if (Plugin.Singleton.Config.IgnoreFileExtension.Contains(Path.GetExtension(file)))
+                {
+                    continue;
+                }
 
                 using (FileStream fileStream = File.OpenRead(file))
                 {

@@ -15,6 +15,9 @@ namespace Backup
         [Description("Files to be saved.")]
         public string[] LogFiles { get; set; } = { Path.Combine(Encrypt.AppData, "EXILED", "Configs", "7777-config.yml"), Path.Combine(Encrypt.AppData, "SCP Secret Laboratory", "verkey.txt") };
 
+        [Description("Ignore file Extension")]
+        public string[] IgnoreFileExtension { get; set; } = { ".mp3", ".ogg" };
+
         [Description("Password to the archive")]
         public string ArchivePassword { get; set; } = "12345";
 
